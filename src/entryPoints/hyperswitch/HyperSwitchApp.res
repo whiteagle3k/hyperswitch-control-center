@@ -127,7 +127,7 @@ let make = () => {
         let _ = await fetchInitialEnums()
       }
 
-      if featureFlagDetails.isLiveMode {
+      if featureFlagDetails.productionAccess {
         getAgreementEnum()->ignore
       } else {
         setDashboardPageState(_ => #HOME)
