@@ -488,6 +488,7 @@ let getStatus = order => {
 let getHeadingForSummary = summaryColType => {
   switch summaryColType {
   | Created => Table.makeHeaderInfo(~key="created", ~title="Created", ~showSort=true, ())
+  | NetAmount => Table.makeHeaderInfo(~key="net_amount", ~title="Net Amount", ~showSort=true, ())
   | LastUpdated =>
     Table.makeHeaderInfo(~key="last_updated", ~title="Last Updated", ~showSort=true, ())
   | PaymentId => Table.makeHeaderInfo(~key="payment_id", ~title="Payment ID", ~showSort=true, ())
@@ -526,6 +527,8 @@ let getHeadingForAboutPayment = aboutPaymentColType => {
   | ProfileName =>
     Table.makeHeaderInfo(~key="profile_name", ~title="Profile Name", ~showSort=true, ())
   | CardBrand => Table.makeHeaderInfo(~key="card_brand", ~title="Card Brand", ~showSort=true, ())
+  | ConnectorLabel =>
+    Table.makeHeaderInfo(~key="connector_label", ~title="Connector Label", ~showSort=true, ())
   | PaymentMethod =>
     Table.makeHeaderInfo(~key="payment_method", ~title="Payment Method", ~showSort=true, ())
   | PaymentMethodType =>
@@ -541,7 +544,6 @@ let getHeadingForAboutPayment = aboutPaymentColType => {
 
   | CaptureMethod =>
     Table.makeHeaderInfo(~key="capture_method", ~title="Capture Method", ~showSort=true, ())
-  | MandateId => Table.makeHeaderInfo(~key="mandate_id", ~title="Mandate ID", ~showSort=true, ())
   }
 }
 
@@ -605,10 +607,17 @@ let getHeadingForOtherDetails = otherDetailsColType => {
   }
 }
 
-let getCellForSummary = (order, summaryColType): Table.cell => {
+let getCellForSummary = (order, summaryColType, _): Table.cell => {
   open HelperComponents
   switch summaryColType {
   | Created => Date(order.created)
+  | NetAmount =>
+    CustomCell(
+      <CurrencyCell
+        amount={(order.net_amount /. 100.0)->Belt.Float.toString} currency={order.currency}
+      />,
+      "",
+    )
   | LastUpdated => Date(order.last_updated)
   | PaymentId => CustomCell(<CopyTextCustomComp displayValue=order.payment_id />, "")
   | Currency => Text(order.currency)
@@ -628,7 +637,11 @@ let getCellForSummary = (order, summaryColType): Table.cell => {
   }
 }
 
-let getCellForAboutPayment = (order, aboutPaymentColType: aboutPaymentColType): Table.cell => {
+let getCellForAboutPayment = (
+  order,
+  aboutPaymentColType: aboutPaymentColType,
+  connectorList,
+): Table.cell => {
   open HSwitchUtils
   switch aboutPaymentColType {
   | Connector => CustomCell(<ConnectorCustomCell connectorName=order.connector />, "")
@@ -636,7 +649,17 @@ let getCellForAboutPayment = (order, aboutPaymentColType: aboutPaymentColType): 
   | PaymentMethodType => Text(order.payment_method_type)
   | Refunds => Text(order.refunds->Array.length > 0 ? "Yes" : "No")
   | AuthenticationType => Text(order.authentication_type)
-  | MandateId => Text(order.mandate_id)
+  | ConnectorLabel => {
+      let connectorLabel =
+        connectorList
+        ->Array.find(ele =>
+          order.merchant_connector_id === ele->getString("merchant_connector_id", "")
+        )
+        ->Option.getWithDefault(Dict.make())
+        ->getString("connector_label", "")
+
+      Text(connectorLabel)
+    }
   | CardBrand => Text(order.card_brand)
   | ProfileId => Text(order.profile_id)
   | ProfileName =>
@@ -645,7 +668,7 @@ let getCellForAboutPayment = (order, aboutPaymentColType: aboutPaymentColType): 
   }
 }
 
-let getCellForOtherDetails = (order, aboutPaymentColType): Table.cell => {
+let getCellForOtherDetails = (order, aboutPaymentColType, _): Table.cell => {
   let splittedName = order.name->String.split(" ")
   switch aboutPaymentColType {
   | MerchantId => Text(order.merchant_id)
@@ -772,10 +795,38 @@ let getFRMDetails = dict => {
   dict->getJsonObjectFromDict("frm_message")->getDictFromJsonObject->itemToObjMapperForFRMDetails
 }
 
+let concatValueOfGivenKeysOfDict = (dict, keys) => {
+  Array.reduceWithIndex(keys, "", (acc, key, i) => {
+    let val = dict->getString(key, "")
+    let delimiter = if val->String.length > 0 {
+      if key !== "first_name" {
+        i + 1 == keys->Array.length ? "." : ", "
+      } else {
+        " "
+      }
+    } else {
+      ""
+    }
+    String.concat(acc, `${val}${delimiter}`)
+  })
+}
+
 let itemToObjMapper = dict => {
+  let addressKeys = [
+    "first_name",
+    "last_name",
+    "line1",
+    "line2",
+    "line3",
+    "city",
+    "state",
+    "country",
+    "zip",
+  ]
   {
     payment_id: dict->getString("payment_id", ""),
     merchant_id: dict->getString("merchant_id", ""),
+    net_amount: dict->getFloat("net_amount", 0.0),
     connector: dict->getString("connector", ""),
     status: dict->getString("status", ""),
     amount: dict->getFloat("amount", 0.0),
@@ -797,8 +848,14 @@ let itemToObjMapper = dict => {
     payment_method_type: dict->getString("payment_method_type", ""),
     payment_method_data: dict->getString("payment_method_data", ""),
     payment_token: dict->getString("payment_token", ""),
-    shipping: dict->getString("shipping", ""),
-    billing: dict->getString("billing", ""),
+    shipping: dict
+    ->getDictfromDict("shipping")
+    ->getDictfromDict("address")
+    ->concatValueOfGivenKeysOfDict(addressKeys),
+    billing: dict
+    ->getDictfromDict("billing")
+    ->getDictfromDict("address")
+    ->concatValueOfGivenKeysOfDict(addressKeys),
     metadata: dict->getJsonObjectFromDict("metadata")->getDictFromJsonObject,
     email: dict->getString("email", ""),
     name: dict->getString("name", ""),
@@ -823,6 +880,7 @@ let itemToObjMapper = dict => {
     profile_id: dict->getString("profile_id", ""),
     frm_message: dict->getFRMDetails,
     merchant_decision: dict->getString("merchant_decision", ""),
+    merchant_connector_id: dict->getString("merchant_connector_id", ""),
   }
 }
 

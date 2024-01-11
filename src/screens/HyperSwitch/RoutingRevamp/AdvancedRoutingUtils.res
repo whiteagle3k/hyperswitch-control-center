@@ -2,10 +2,6 @@ let getCurrentDetailedUTCTime = () => {
   Js.Date.fromFloat(Js.Date.now())->Js.Date.toUTCString
 }
 
-let defaultThreeDsObjectValue: AdvancedRoutingTypes.connectorSelection = {
-  override_3ds: "three_ds",
-}
-
 let getCurrentShortUTCTime = () => {
   let currentDate = Js.Date.now()->Js.Date.fromFloat
   let currMonth = currentDate->Js.Date.getUTCMonth->Belt.Float.toString
@@ -74,17 +70,6 @@ let getWasmVariantValues = (wasm, value) => {
   }
 }
 
-let getWasmGateway = wasm => {
-  try {
-    switch wasm {
-    | Some(res) => res.RoutingTypes.getAllConnectors()
-    | None => []
-    }
-  } catch {
-  | _ => []
-  }
-}
-
 let variantTypeMapper: string => AdvancedRoutingTypes.variantType = variantType => {
   switch variantType {
   | "number" => Number
@@ -132,15 +117,6 @@ let conditionTypeMapper = (statementArr: array<Js.Json.t>) => {
   })
 
   statements
-}
-
-let routingTypeMapper = (str: string) => {
-  open AdvancedRoutingTypes
-  switch str->String.toLowerCase {
-  | "priority" => PRIORITY
-  | "volume_split" => VOLUME_SPLIT
-  | _ => NO_ROUTING
-  }
 }
 
 let volumeSplitConnectorSelectionDataMapper: Js.Dict.t<
@@ -200,6 +176,7 @@ let getDefaultSelection: Js.Dict.t<
           \"type": surchargeValue->getString("type", ""),
           value: {
             percentage: surchargeValue->getDictfromDict("value")->getFloat("percentage", 0.0),
+            amount: surchargeValue->getDictfromDict("value")->getFloat("amount", 0.0),
           },
         },
         tax_on_surcharge: {
@@ -288,50 +265,6 @@ let getOperatorFromComparisonType = (comparison, variantType) => {
   | "greater_than" => "GREATER_THAN"
   | "less_than" => "LESS_THAN"
   | _ => ""
-  }
-}
-
-let getGatewaysArrayFromValueData = data => {
-  data->Array.map(getConnectorStringFromConnectorSelectionData)
-}
-
-let getModalObj = (routingType, text) => {
-  open AdvancedRoutingTypes
-  switch routingType {
-  | ADVANCED => {
-      conType: "Activate current configured configuration?",
-      conText: {
-        React.string(
-          `If you want to activate the ${text} configuration, the advanced configuration, set previously will be lost. Are you sure you want to activate it?`,
-        )
-      },
-    }
-  | VOLUME_SPLIT => {
-      conType: "Activate current configured configuration?",
-      conText: {
-        React.string(
-          `If you want to activate the ${text} configuration, the volume based configuration, set previously will be lost. Are you sure you want to activate it?`,
-        )
-      },
-    }
-  | PRIORITY => {
-      conType: "Activate current configured configuration?",
-      conText: {
-        React.string(
-          `If you want to activate the ${text} configuration, the simple configuration, set previously will be lost. Are you sure you want to activate it?`,
-        )
-      },
-    }
-  | DEFAULTFALLBACK => {
-      conType: "Save the Current Changes ?",
-      conText: {
-        React.string(`Do you want to save the current changes ?`)
-      },
-    }
-  | _ => {
-      conType: "Activate Logic",
-      conText: {React.string("Are you sure you want to ACTIVATE the logic?")},
-    }
   }
 }
 
@@ -431,4 +364,39 @@ let generateRule = rulesDict => {
     }
   })
   modifiedRules
+}
+
+let defaultRule: AdvancedRoutingTypes.rule = {
+  name: "rule_1",
+  connectorSelection: {
+    \"type": "priority",
+  },
+  statements: [
+    {
+      lhs: "",
+      comparison: "",
+      value: {
+        \"type": "",
+        value: ""->Js.Json.string,
+      },
+    },
+  ],
+}
+
+let defaultAlgorithmData: AdvancedRoutingTypes.algorithmData = {
+  rules: [defaultRule],
+  metadata: Dict.make()->Js.Json.object_,
+  defaultSelection: {
+    \"type": "",
+    data: [],
+  },
+}
+
+let initialValues: AdvancedRoutingTypes.advancedRouting = {
+  name: getRoutingNameString(~routingType=ADVANCED),
+  description: getRoutingDescriptionString(~routingType=ADVANCED),
+  algorithm: {
+    data: defaultAlgorithmData,
+    \"type": "",
+  },
 }
