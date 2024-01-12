@@ -1,5 +1,6 @@
 type featureFlag = {
   default: bool,
+  isHomeEnabled: bool,
   productionAccess: bool,
   testLiveToggle: bool,
   magicLink: bool,
@@ -31,6 +32,7 @@ let featureFlagType = (featureFlags: Js.Json.t) => {
   let dict = featureFlags->getDictFromJsonObject
   let typedFeatureFlag: featureFlag = {
     default: dict->getBool("default", true),
+    isHomeEnabled: dict->getBool("is_home_enabled", true),
     productionAccess: dict->getBool("production_access", false),
     testLiveToggle: dict->getBool("test_live_toggle", false),
     magicLink: dict->getBool("magic_link", false),

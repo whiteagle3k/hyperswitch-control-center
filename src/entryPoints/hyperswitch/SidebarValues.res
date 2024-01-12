@@ -92,15 +92,21 @@ let operations = (isOperationsEnabled, customersModule) => {
         name: "Operations",
         icon: "hswitch-operations",
         showSection: true,
-        links: customersModule
+        /*
+         links: customersModule
           ? [payments, refunds, disputes, customers]
           : [payments, refunds, disputes],
+
+ */
+        links: customersModule ? [payments, refunds, customers] : [payments, refunds],
       })
     : emptyComponent
 }
 
-let connectors = (isConnectorsEnabled, isLiveMode) => {
-  isConnectorsEnabled
+let connectors = (isConnectorsEnabled, isLiveMode, userRole) => {
+  let canAccess = userRole->String.includes("admin") || userRole->String.includes("developer")
+
+  isConnectorsEnabled && canAccess
     ? Link({
         name: "Processors",
         link: `/connectors`,
@@ -176,8 +182,9 @@ let surcharge = SubLevelLink({
   searchOptions: [("Add Surcharge", "")],
 })
 
-let workflow = (isWorkflowEnabled, isSurchargeEnabled) =>
-  isWorkflowEnabled
+let workflow = (isWorkflowEnabled, isSurchargeEnabled, userRole) => {
+  let canAccess = userRole->String.includes("admin") || userRole->String.includes("developer")
+  isWorkflowEnabled && canAccess
     ? Section({
         name: "Workflow",
         icon: "3ds",
@@ -185,6 +192,7 @@ let workflow = (isWorkflowEnabled, isSurchargeEnabled) =>
         links: isSurchargeEnabled ? [routing, threeDs, surcharge] : [routing, threeDs],
       })
     : emptyComponent
+}
 
 let userManagement = SubLevelLink({
   name: "Team",
@@ -218,8 +226,14 @@ let businessProfiles = SubLevelLink({
   searchOptions: [("Configure business profiles", "")],
 })
 
-let settings = (~isSampleDataEnabled, ~isUserManagementEnabled, ~isBusinessProfileEnabled) => {
+let settings = (
+  ~isSampleDataEnabled,
+  ~isUserManagementEnabled,
+  ~isBusinessProfileEnabled,
+  userRole,
+) => {
   let settingsLinkArray = [businessDetails]
+  let canAccess = userRole->String.includes("admin") || userRole->String.includes("developer")
 
   if isBusinessProfileEnabled {
     settingsLinkArray->Array.push(businessProfiles)->ignore
@@ -227,7 +241,7 @@ let settings = (~isSampleDataEnabled, ~isUserManagementEnabled, ~isBusinessProfi
   if isSampleDataEnabled {
     settingsLinkArray->Array.push(accountSettings)->ignore
   }
-  if isUserManagementEnabled {
+  if isUserManagementEnabled && canAccess {
     settingsLinkArray->Array.push(userManagement)->ignore
   }
 
@@ -263,8 +277,9 @@ let paymentSettings = SubLevelLink({
 
 let developers = (isDevelopersEnabled, userRole, systemMetrics) => {
   let isInternalUser = userRole->String.includes("internal_")
+  let canAccess = userRole->String.includes("admin") || userRole->String.includes("developer")
 
-  isDevelopersEnabled
+  isDevelopersEnabled && canAccess
     ? Section({
         name: "Developers",
         icon: "developer",
@@ -323,6 +338,7 @@ let getHyperSwitchAppSidebars = (
     payOut,
     recon,
     default,
+    isHomeEnabled,
     userManagement,
     sampleData,
     businessProfile,
@@ -334,11 +350,11 @@ let getHyperSwitchAppSidebars = (
   } = featureFlagDetails
   let sidebar = [
     productionAccess->productionAccessComponent,
-    default->home,
+    isHomeEnabled->home,
     default->operations(customersModule),
     default->analytics(userJourneyAnalyticsFlag),
-    default->connectors(isLiveMode),
-    default->workflow(isSurchargeEnabled),
+    default->connectors(isLiveMode, userRole),
+    default->workflow(isSurchargeEnabled, userRole),
     frm->fraudAndRisk,
     payOut->payoutConnectors,
     recon->reconTag(isReconEnabled),
@@ -347,6 +363,7 @@ let getHyperSwitchAppSidebars = (
       ~isUserManagementEnabled=userManagement,
       ~isBusinessProfileEnabled=businessProfile,
       ~isSampleDataEnabled=sampleData,
+      userRole,
     ),
   ]
   sidebar

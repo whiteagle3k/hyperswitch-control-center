@@ -151,6 +151,16 @@ let make = () => {
     React.null
   }
 
+  let determineHomeEnable = () => {
+    if featureFlagDetails.isHomeEnabled {
+      RescriptReactRouter.replace("/home")
+      React.null
+    } else {
+      RescriptReactRouter.replace("/payments")
+      React.null
+    }
+  }
+
   let determineStripePlusPayPal = () => {
     if enumDetails->checkStripePlusPayPal {
       RescriptReactRouter.replace("/home")
@@ -173,7 +183,8 @@ let make = () => {
     if (
       isProdIntentCompleted &&
       enumDetails.integrationCompleted &&
-      enumDetails.testPayment.payment_id->String.length > 0
+      enumDetails.testPayment.payment_id->String.length > 0 &&
+      featureFlagDetails.isHomeEnabled
     ) {
       RescriptReactRouter.replace("/home")
       React.null
@@ -181,6 +192,9 @@ let make = () => {
       setPageState(#QUICK_START)
     }
   }
+
+  let isAdminOrDeveloper =
+    userRole->String.includes("admin") || userRole->String.includes("developer")
 
   <PageLoaderWrapper screenState={screenState} sectionHeight="!h-screen">
     <div>
@@ -208,7 +222,9 @@ let make = () => {
                       headerActions={<div className="relative flex items-center gap-4 my-2 ">
                         <HSwitchGlobalSearchBar />
                         <RenderIf condition={featureFlagDetails.switchMerchant}>
-                          <SwitchMerchant userRole={userRole} isAddMerchantEnabled=true />
+                          <SwitchMerchant
+                            userRole={userRole} isAddMerchantEnabled=isAdminOrDeveloper
+                          />
                         </RenderIf>
                         <div
                           className={`px-4 py-2 rounded whitespace-nowrap text-fs-13 ${modeStyles} font-semibold`}>
@@ -371,7 +387,11 @@ let make = () => {
                       | list{"stripe-plus-paypal"} => determineStripePlusPayPal()
 
                       | _ =>
-                        RescriptReactRouter.replace(`${hyperSwitchFEPrefix}/home`)
+                        RescriptReactRouter.replace(
+                          `${hyperSwitchFEPrefix}/${featureFlagDetails.isHomeEnabled
+                              ? "home"
+                              : "payments"}`,
+                        )
                         <Home />
                       }}
                     </ErrorBoundary>
