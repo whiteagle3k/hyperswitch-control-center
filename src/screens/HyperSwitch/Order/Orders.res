@@ -35,6 +35,7 @@ let make = (~previewOnly=false) => {
         let filters = Dict.make()
 
         filters->Dict.set("offset", offset->Belt.Int.toFloat->Js.Json.number)
+        filters->Dict.set("limit", pageDetail.resultsPerPage->Belt.Int.toFloat->Js.Json.number)
         if !(searchText->isEmptyString) {
           filters->Dict.set("payment_id", searchText->String.trim->Js.Json.string)
         }
@@ -118,7 +119,7 @@ let make = (~previewOnly=false) => {
           title="Orders"
           actualData=orderData
           entity={OrderEntity.orderEntity}
-          resultsPerPage=10
+          resultsPerPage=pageDetail.resultsPerPage
           showSerialNumber=false
           totalResults={previewOnly ? orderData->Array.length : totalCount}
           offset

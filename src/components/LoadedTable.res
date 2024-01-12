@@ -244,8 +244,7 @@ let make = (
     }
     None
   })
-  let resultsPerPage =
-    resultsPerPage > 10 ? defaultResultsPerPage ? 10 : resultsPerPage : resultsPerPage
+  //let resultsPerPage = resultsPerPage > 10 ? defaultResultsPerPage ? 10 : resultsPerPage : resultsPerPage
   let customizeColumnNewTheme = None
   let defaultValue: pageDetails = {offset, resultsPerPage}
   let (firstRender, setFirstRender) = React.useState(_ => true)
@@ -304,7 +303,6 @@ let make = (
     | None => {offset: defaultValue.offset, resultsPerPage: localResultsPerPage(0)}
     }
     let newDict = pageDetailDict->Dict.toArray->Dict.fromArray
-
     newDict->Dict.set(title, value)
     setPageDetails(._ => newDict)
   }

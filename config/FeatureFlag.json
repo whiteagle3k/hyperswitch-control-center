@@ -6,7 +6,7 @@
   "production_access": false,
   "quick_start": false,
   "switch_merchant": true,
-  "audit_trail": true,
+  "audit_trail": false,
   "system_metrics": false,
   "sample_data": false,
   "frm": false,
@@ -22,6 +22,6 @@
   "generate_report": false,
   "forgot_password": false,
   "user_journey_analytics": false,
-  "surcharge": false,
+  "surcharge": true,
   "customers_module": true
 }

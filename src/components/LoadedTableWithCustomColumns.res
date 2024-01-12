@@ -101,6 +101,7 @@ let make = (
   }
 
   let rightTitleElement = !previewOnly ? customizeColumn : React.null
+  let defaultResultsPerPage = false
 
   <LoadedTable
     visibleColumns
@@ -149,5 +150,6 @@ let make = (
     showResultsPerPageSelector
     ?setExtFilteredDataLength
     noScrollbar
+    defaultResultsPerPage
   />
 }
