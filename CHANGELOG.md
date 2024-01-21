@@ -3,6 +3,92 @@ All notable changes to this project will be documented in this file. See [conven
 
 - - -
 
+## 1.26.0 (2024-01-18)
+
+### Features
+
+- Add new user ([#237](https://github.com/juspay/hyperswitch-control-center/pull/237)) ([`3749e32`](https://github.com/juspay/hyperswitch-control-center/commit/3749e3278602c2ad514079db3d6d78226cfa9391))
+- Access added for Button ([#274](https://github.com/juspay/hyperswitch-control-center/pull/274)) ([`d5ecee6`](https://github.com/juspay/hyperswitch-control-center/commit/d5ecee626d3da87f6bda8495b7539ba8660a7618))
+
+### Bug Fixes
+
+- Floating point value fix for test payment ([#270](https://github.com/juspay/hyperswitch-control-center/pull/270)) ([`038a714`](https://github.com/juspay/hyperswitch-control-center/commit/038a71492de22f1a1a51b6de9f68f010bf872268))
+
+### Refactors
+
+- Routing types and utils ([#254](https://github.com/juspay/hyperswitch-control-center/pull/254)) ([`b8b5034`](https://github.com/juspay/hyperswitch-control-center/commit/b8b5034fbae6974e34c799e6f9333e3663247f7f))
+
+### Miscellaneous Tasks
+
+- Added Access Type & Remove the Read & ReadWrite Type ([#267](https://github.com/juspay/hyperswitch-control-center/pull/267)) ([`49e3eae`](https://github.com/juspay/hyperswitch-control-center/commit/49e3eaeb9bd14a3c788649b81cf561386a5ce006))
+- Refactor invite users ([#273](https://github.com/juspay/hyperswitch-control-center/pull/273)) ([`85b07d0`](https://github.com/juspay/hyperswitch-control-center/commit/85b07d0cf058dd0842b11acb7714cd85f8d9d6c6))
+
+**Full Changelog:** [`v1.25.1...v1.26.0`](https://github.com/juspay/hyperswitch-control-center/compare/v1.25.1...v1.26.0)
+
+- - -
+
+
+## 1.25.1 (2024-01-17)
+
+### Miscellaneous Tasks
+
+- Sidebar refactoring & permissions added ([#264](https://github.com/juspay/hyperswitch-control-center/pull/264)) ([`f428679`](https://github.com/juspay/hyperswitch-control-center/commit/f428679fa9b98e002e8bb1f670af65595ae64845))
+- Access Control Module added ([#266](https://github.com/juspay/hyperswitch-control-center/pull/266)) ([`59d0b53`](https://github.com/juspay/hyperswitch-control-center/commit/59d0b5387476536ed3a7f6a9f3468a3bd115232f))
+
+**Full Changelog:** [`v1.25.0...v1.25.1`](https://github.com/juspay/hyperswitch-control-center/compare/v1.25.0...v1.25.1)
+
+- - -
+
+
+## 1.25.0 (2024-01-16)
+
+### Features
+
+- Cybersource enabled in Prod ([#256](https://github.com/juspay/hyperswitch-control-center/pull/256)) ([`93f202e`](https://github.com/juspay/hyperswitch-control-center/commit/93f202e4c0b76e29de7e515e3b405692a09e3e40))
+
+### Bug Fixes
+
+- Make tax_on_surcharge optional and add description ([#259](https://github.com/juspay/hyperswitch-control-center/pull/259)) ([`498437b`](https://github.com/juspay/hyperswitch-control-center/commit/498437b94fe6f69c42708baca19ba9132714f467))
+
+**Full Changelog:** [`v1.24.2...v1.25.0`](https://github.com/juspay/hyperswitch-control-center/compare/v1.24.2...v1.25.0)
+
+- - -
+
+
+## 1.24.2 (2024-01-12)
+
+### Bug Fixes
+
+- Currency change ([#249](https://github.com/juspay/hyperswitch-control-center/pull/249)) ([`f72f290`](https://github.com/juspay/hyperswitch-control-center/commit/f72f290468125c6763e89047b162642ab3bf27e6))
+- Currency change ([#250](https://github.com/juspay/hyperswitch-control-center/pull/250)) ([`89f4874`](https://github.com/juspay/hyperswitch-control-center/commit/89f487488a008dafd1e704f4e796048eda631429))
+
+**Full Changelog:** [`v1.24.1...v1.24.2`](https://github.com/juspay/hyperswitch-control-center/compare/v1.24.1...v1.24.2)
+
+- - -
+
+
+## 1.24.1 (2024-01-12)
+
+### Bug Fixes
+
+- Curruncy fix ([#248](https://github.com/juspay/hyperswitch-control-center/pull/248)) ([`12c72a7`](https://github.com/juspay/hyperswitch-control-center/commit/12c72a7cb95fd408737564111e324c44c0001626))
+
+**Full Changelog:** [`v1.24.0...v1.24.1`](https://github.com/juspay/hyperswitch-control-center/compare/v1.24.0...v1.24.1)
+
+- - -
+
+
+## 1.24.0 (2024-01-12)
+
+### Features
+
+- Zero payment added ([#246](https://github.com/juspay/hyperswitch-control-center/pull/246)) ([`90dbf28`](https://github.com/juspay/hyperswitch-control-center/commit/90dbf287265bf51920edc2666ead6b8bdd49f337))
+
+**Full Changelog:** [`v1.23.3...v1.24.0`](https://github.com/juspay/hyperswitch-control-center/compare/v1.23.3...v1.24.0)
+
+- - -
+
+
 ## 1.23.3 (2024-01-11)
 
 ### Bug Fixes

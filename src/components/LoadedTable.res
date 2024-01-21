@@ -74,7 +74,7 @@ let sortArray = (originalData, key, sortOrder: Table.sortOrder) => {
     switch val {
     | Some(x) =>
       switch x->Js.Json.classify {
-      | JSONString(str) => str->Js.String.toLowerCase->Js.Json.string
+      | JSONString(str) => str->String.toLowerCase->Js.Json.string
       | JSONNumber(_num) => x
       | JSONFalse => "false"->Js.Json.string
       | JSONTrue => "true"->Js.Json.string
@@ -250,7 +250,7 @@ let make = (
   let (firstRender, setFirstRender) = React.useState(_ => true)
   let setPageDetails = Recoil.useSetRecoilState(table_pageDetails)
   let pageDetailDict = Recoil.useRecoilValueFromAtom(table_pageDetails)
-  let pageDetail = pageDetailDict->Dict.get(title)->Belt.Option.getWithDefault(defaultValue)
+  let pageDetail = pageDetailDict->Dict.get(title)->Option.getWithDefault(defaultValue)
 
   let (
     selectAllCheckBox: option<TableUtils.multipleSelectRows>,
@@ -323,7 +323,7 @@ let make = (
         let newObj = oldFitlers->Dict.toArray->Dict.fromArray
         let filterValue = filterValue->Array.filter(
           item => {
-            let updatedItem = item->Js.String.make
+            let updatedItem = item->String.make
             updatedItem !== ""
           },
         )
@@ -371,9 +371,9 @@ let make = (
   }, (isFilterOpen, setIsFilterOpen))
 
   let heading =
-    visibleColumns->Belt.Option.getWithDefault(entity.defaultColumns)->Array.map(entity.getHeading)
+    visibleColumns->Option.getWithDefault(entity.defaultColumns)->Array.map(entity.getHeading)
 
-  let handleRemoveLines = removeVerticalLines->Belt.Option.getWithDefault(true)
+  let handleRemoveLines = removeVerticalLines->Option.getWithDefault(true)
   if showSerialNumber {
     heading
     ->Array.unshift(
@@ -437,7 +437,7 @@ let make = (
     if tableLocalFilter {
       let columnFilterRow =
         visibleColumns
-        ->Belt.Option.getWithDefault(entity.defaultColumns)
+        ->Option.getWithDefault(entity.defaultColumns)
         ->Array.map(item => {
           let headingEntity = entity.getHeading(item)
           let key = headingEntity.key
@@ -485,7 +485,7 @@ let make = (
           | MoneyType | NumericType | ProgressType => {
               let newArr =
                 filterValueArray->Array.map(
-                  item => item->Js.Json.decodeNumber->Belt.Option.getWithDefault(0.),
+                  item => item->Js.Json.decodeNumber->Option.getWithDefault(0.),
                 )
 
               if newArr->Array.length >= 1 {
@@ -557,19 +557,19 @@ let make = (
     None
   }, [selectAllCheckBox])
 
-  let sNoArr = Dict.get(columnFilter, "s_no")->Belt.Option.getWithDefault([])
+  let sNoArr = Dict.get(columnFilter, "s_no")->Option.getWithDefault([])
   // filtering for SNO
   let nullableRows = filteredData->Array.mapWithIndex((nullableItem, index) => {
     let actualRows = switch nullableItem->Js.Nullable.toOption {
     | Some(item) => {
         let visibleCell =
           visibleColumns
-          ->Belt.Option.getWithDefault(entity.defaultColumns)
+          ->Option.getWithDefault(entity.defaultColumns)
           ->Array.map(colType => {
             entity.getCell(item, colType)
           })
-        let startPoint = sNoArr->Belt.Array.get(0)->Belt.Option.getWithDefault(1.->Js.Json.number)
-        let endPoint = sNoArr->Belt.Array.get(1)->Belt.Option.getWithDefault(1.->Js.Json.number)
+        let startPoint = sNoArr->Belt.Array.get(0)->Option.getWithDefault(1.->Js.Json.number)
+        let endPoint = sNoArr->Belt.Array.get(1)->Option.getWithDefault(1.->Js.Json.number)
         let jsonIndex = (index + 1)->Belt.Int.toFloat->Js.Json.number
         sNoArr->Array.length > 0
           ? {
@@ -758,7 +758,7 @@ let make = (
       React.null
     }
     let isMinHeightRequired =
-      noScrollbar || (tableLocalFilter && rows->Array.length <= 5 && frozenUpto->Belt.Option.isNone)
+      noScrollbar || (tableLocalFilter && rows->Array.length <= 5 && frozenUpto->Option.isNone)
 
     let scrollBarClass =
       isFilterOpen->Dict.valuesToArray->Array.reduce(false, (acc, item) => item || acc)
@@ -777,8 +777,7 @@ let make = (
                 ?setFilterObj
                 onRowClick=handleRowClick
                 onRowDoubleClick
-                onRowClickPresent={onEntityClick->Belt.Option.isSome ||
-                  getShowLink->Belt.Option.isSome}
+                onRowClickPresent={onEntityClick->Option.isSome || getShowLink->Option.isSome}
                 offset=offsetVal
                 setSortedObj
                 ?sortedObj
@@ -924,7 +923,7 @@ let make = (
   } else {
     `${ignoreHeaderBg ? "" : backgroundClass} empty:hidden`
   }
-  let dataId = title->Js.String2.split("-")->Belt.Array.get(0)->Belt.Option.getWithDefault("")
+  let dataId = title->Js.String2.split("-")->Belt.Array.get(0)->Option.getWithDefault("")
   <AddDataAttributes attributes=[("data-loaded-table", dataId)]>
     <div className="w-full">
       <div className=addDataAttributesClass style={ReactDOMStyle.make(~zIndex="2", ())}>
@@ -997,12 +996,12 @@ let make = (
         <TableDataLoadingIndicator showWithData={rows->Array.length !== 0} />
       </UIUtils.RenderIf>
       <div
-        className={`${tableActions->Js.Option.isSome && isMobileView
+        className={`${tableActions->Option.isSome && isMobileView
             ? `flex flex-row-reverse justify-between mb-10 ${tableDataBackgroundClass}`
             : tableDataBackgroundClass}`}>
         paginationUI
         {
-          let topBottomActions = if bottomActions->Js.Option.isSome || !isMobileView {
+          let topBottomActions = if bottomActions->Option.isSome || !isMobileView {
             bottomActions
           } else {
             tableActions
