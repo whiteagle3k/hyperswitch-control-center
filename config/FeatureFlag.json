@@ -1,7 +1,7 @@
 {
   "test_live_toggle": false,
   "is_home_enabled": false,
-  "is_live_mode": true,
+  "is_live_mode": false,
   "magic_link": false,
   "production_access": false,
   "quick_start": false,
@@ -10,7 +10,7 @@
   "system_metrics": false,
   "sample_data": false,
   "frm": false,
-  "payout": false,
+  "payout": true,
   "recon": false,
   "user_management": true,
   "test_processors": true,
@@ -23,5 +23,6 @@
   "forgot_password": false,
   "user_journey_analytics": false,
   "surcharge": true,
-  "customers_module": true
+  "customers_module": true,
+  "permission_based_module": true
 }
