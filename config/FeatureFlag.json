@@ -10,7 +10,7 @@
   "system_metrics": false,
   "sample_data": false,
   "frm": false,
-  "payout": true,
+  "payout": false,
   "recon": false,
   "user_management": true,
   "test_processors": true,
