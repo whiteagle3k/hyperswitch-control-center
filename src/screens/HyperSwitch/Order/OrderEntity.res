@@ -308,7 +308,15 @@ let getAttempts: Js.Json.t => array<attempts> = json => {
   LogicUtils.getArrayDataFromJson(json, attemptsItemToObjMapper)
 }
 
-let defaultColumns: array<colType> = [Created, Connector, Amount, Status, PaymentId, PaymentMethod]
+let defaultColumns: array<colType> = [
+  Created,
+  Connector,
+  Amount,
+  Status,
+  ConnectorTransactionID,
+  CustomerId,
+  PaymentMethodType,
+]
 
 let allColumns = [
   Amount,
