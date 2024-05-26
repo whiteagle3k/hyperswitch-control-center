@@ -107,7 +107,7 @@ let operations = (isOperationsEnabled, customersModule, ~permissionJson) => {
         name: "Operations",
         icon: "hswitch-operations",
         showSection: true,
-         links: customersModule
+        links: customersModule
           ? [payments, refunds, disputes, customers]
           : [payments, refunds, disputes],
         //links: customersModule ? [payments, refunds, customers] : [payments, refunds],
