@@ -77,6 +77,7 @@ type connectorName =
   | PROPHETPAY
   | HELCIM
   | EVERYPAY
+  | MAKECOMMERCE
   | UnknownConnector(string)
 
 type paymentMethod =

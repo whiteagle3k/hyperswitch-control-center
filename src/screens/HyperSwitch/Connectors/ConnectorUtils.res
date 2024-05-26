@@ -23,6 +23,7 @@ let connectorList: array<connectorName> = [
   STRIPE,
   PAYPAL,
   EVERYPAY,
+  MAKECOMMERCE,
   ACI,
   ADYEN,
   AIRWALLEX,
@@ -71,6 +72,7 @@ let connectorList: array<connectorName> = [
 let connectorListForLive: array<connectorName> = [
   STRIPE,
   EVERYPAY,
+  MAKECOMMERCE,
   ADYEN,
   PAYPAL,
   BANKOFAMERICA,
@@ -356,6 +358,10 @@ let everypayInfo = {
   description: "EU payment platform",
 }
 
+let makecommerceInfo = {
+  description: "EU payment platform",
+}
+
 let getConnectorNameString = connector => {
   switch connector {
   | ADYEN => "adyen"
@@ -410,6 +416,7 @@ let getConnectorNameString = connector => {
   | BANKOFAMERICA => "bankofamerica"
   | HELCIM => "helcim"
   | EVERYPAY => "everypay"
+  | MAKECOMMERCE => "makecommerce"
   | UnknownConnector(str) => str
   }
 }
@@ -468,6 +475,7 @@ let getConnectorNameTypeFromString = connector => {
   | "prophetpay" => PROPHETPAY
   | "helcim" => HELCIM
   | "everypay" => EVERYPAY
+  | "makecommerce" => MAKECOMMERCE
   | _ => UnknownConnector("Not known")
   }
 }
@@ -526,6 +534,7 @@ let getConnectorInfo = (connector: connectorName) => {
   | BANKOFAMERICA => bankOfAmericaInfo
   | HELCIM => helcimInfo
   | EVERYPAY => everypayInfo
+  | MAKECOMMERCE => makecommerceInfo
   | UnknownConnector(_) => unknownConnectorInfo
   }
 }
